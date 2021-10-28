@@ -23,9 +23,7 @@ git push: upload từ local lên remote
 
 ## Branch
 
-git branch: hiện ra tất cả branch
-
-git branch <branch name>: tạo 1 branch
+git checkout -b <branch name>: tạo và di chuyển đến 1 branch mới
 
 git checkout <branch name>: đi đến 1 branch nào đó
 
