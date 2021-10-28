@@ -4,7 +4,7 @@
 
 ## Cơ bản
 
-git status: check trạng thái các file
+git status: check trạng thái các file (coi có sửa đổi, tạo, xóa gì mới)
 
 git add <file name>: track thay đổi (kiểm tra file có thay đổi không)
 
@@ -21,7 +21,7 @@ git push: upload từ local lên remote
 
 ---
 
-## Branch
+## Branch (nhánh)
 
 git checkout -b <branch name>: tạo và di chuyển đến 1 branch mới
 
@@ -32,6 +32,8 @@ git merge <branch name>: hợp nhất branch mục tiêu với branch hiện t�
 ---
 
 ## Quy trình:
+
+main 
 
 - git checkout <branch> để tới/tạo branch để làm chức năng mới
 - git pull để cập nhật dữ liệu mới nhất từ trên remote về máy (áp dụng khi trên main có thay đổi mới thì nên pull về máy để đỡ bị đụng độ dữ liệu)
