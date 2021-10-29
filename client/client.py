@@ -53,16 +53,14 @@ class Client:
         return res['ok']
 
     def req_process_getall(self):
-        data = dumps('process-getall')
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(2**16))
-        return res
+        send('process-getall')
+        res = recv()
+        return res['data']
 
     def req_process_getallapp(self):
-        data = dumps('process-getallapp')
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(2**16))
-        return res
+        send('process-getallapp')
+        res = recv()
+        return res['data']
 
     def req_keystroke_hook(self):
         data = dumps('keystroke-hook')
@@ -79,37 +77,31 @@ class Client:
         return res
 
     def req_reg_getvalue(self, path, value_name):
-        data = dumps(('reg-getvalue', path, value_name))
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(2**16))
-        return res
+        send('reg-getvalue', [path, value_name])
+        res = recv()
+        return res['data']
 
     def req_reg_setvalue(self, path, value_name, dtype, value):
-        data = dumps(('reg-setvalue', path, value_name, dtype, value))
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(1024))
-        return res
+        send('reg-setvalue', [path, value_name, dtype, value])
+        res = recv()
+        return res['ok']
 
     def req_reg_deletevalue(self, path, value_name):
-        data = dumps(('reg-deletevalue', path, value_name))
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(1024))
-        return res
+        send('reg-deletevalue', [path, value_name])
+        res = recv()
+        return res['ok']
 
     def req_reg_createkey(self, path):
-        data = dumps(('reg-createkey', path))
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(1024))
-        return res
+        send('reg-createkey', [path])
+        res = recv()
+        return res['ok']
 
     def req_reg_deletekey(self, path):
-        data = dumps(('reg-deletekey', path))
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(1024))
-        return res
+        send('reg-deletekey', [path])
+        res = recv()
+        return res['ok']
 
     def req_reg_import(self, content):
-        data = dumps(('reg-import', content))
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(1024))
-        return res
+        send('reg-import', [content])
+        res = recv()
+        return res['ok']
