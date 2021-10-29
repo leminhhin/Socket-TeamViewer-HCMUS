@@ -3,25 +3,10 @@ from pickle import dumps, loads
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-def send(header, params=[]):
-    req = {'header': header, 'params': params}
-    client_socket.sendall(dumps(req))
-    
-    
-def recv(BUF_SIZE=4096):
-    data = b''
-    while True:
-        part = client_socket.recv(BUF_SIZE)
-        data += part    
-        if len(part) < BUF_SIZE:
-            break
-    return loads(data)
-
-
 class Client:
     def __init__(self):
         self.host = '';
-        self.port = 0;
+        sefl.port = 0;
 
     def connect(self):
         try:
@@ -29,28 +14,31 @@ class Client:
             return True
         except:
             return False
-        
 
     def disconnect(self):
         client_socket.close()
 
     def req_shutdown(self):
-        send('shutdown')
+        data = dumps('shutdown')
+        client_socket.sendall(data)
 
     def req_get_screenshot(self):
-        send('getscreenshot')
-        res = recv()
-        return res['data']
+        data = dumps('getscreenshot')
+        client_socket.sendall(data)
+        res = loads(client_socket.recv(7220907))
+        return res
 
     def req_process_start(self, process_name):
-        send('process-start', [process_name])
-        res = recv()
-        return res['ok']
+        data = dumps(('process-start', process_name))
+        client_socket.sendall(data)
+        res = loads(client_socket.recv(1024))
+        return res
 
     def req_process_kill(self, pid):
-        send('process-kill', [pid])
-        res = recv()
-        return res['ok']
+        data = dumps(('process-kill', pid))
+        client_socket.sendall(data)
+        res = loads(client_socket.recv(1024))
+        return res
 
     def req_process_getall(self):
         data = dumps('process-getall')
@@ -113,8 +101,3 @@ class Client:
         client_socket.sendall(data)
         res = loads(client_socket.recv(1024))
         return res
-
-    def req_mac_address(self):
-        send('mac-address')
-        res = recv()
-        return res['data']
