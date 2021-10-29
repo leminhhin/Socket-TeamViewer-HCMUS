@@ -113,3 +113,8 @@ class Client:
         client_socket.sendall(data)
         res = loads(client_socket.recv(1024))
         return res
+
+    def req_mac_address(self):
+        send('mac-address')
+        res = recv()
+        return res['data']
