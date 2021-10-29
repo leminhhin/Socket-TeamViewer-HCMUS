@@ -1,5 +1,4 @@
 
-*.pyproj
 client/.vs/client/v16/.suo
-*.sln
-*.pyc
+client/client.pyproj
+client/client.sln

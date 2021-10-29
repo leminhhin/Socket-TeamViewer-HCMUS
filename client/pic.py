@@ -14,7 +14,6 @@ class pic_frame(tk.Frame):
 		self.pack(fill = tk.BOTH, expand = True)
 		self.make_widgets()
 		self.img = None
-		self.label = None
 		self.parent.title("Chụp màn hình")
 
 	def make_widgets(self):
@@ -44,18 +43,17 @@ class pic_frame(tk.Frame):
 		#Chụp
 	def shot_image(self):
 		tmp_client = client.Client
-		if self.img != None:
-			self.label.destroy();
 		try:
 			self.img = tmp_client.req_get_screenshot(tmp_client)
 		except:
 			return None
 		if not self.img:
 			msbx.showerror("Screenshot", "Không thể chụp màn hình")
-		self.resized_img = self.img.resize((433, 255))
-		self.tatras = ImageTk.PhotoImage(self.resized_img)
-		self.label = thm.Label(self.frame2, image=self.tatras)
-		self.label.pack()
+		resized_img = self.img.resize((433, 255))
+		tatras = ImageTk.PhotoImage(resized_img)
+		label = thm.Label(self.frame2, image=tatras)
+		label.image = tatras
+		label.pack()
 		self.pack()
 	def save_image(self):
 		if not self.img:
