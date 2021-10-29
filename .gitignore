@@ -2,3 +2,4 @@
 *.pyproj
 client/.vs/client/v16/.suo
 *.sln
+*.pyc
