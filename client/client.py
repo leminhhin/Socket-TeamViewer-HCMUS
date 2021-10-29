@@ -22,6 +22,10 @@ class Client:
         data = dumps('shutdown')
         client_socket.sendall(data)
 
+    def req_logout(self):
+        data = dumps('logout')
+        client_socket.sendall(data)
+
     def req_get_screenshot(self):
         data = dumps('getscreenshot')
         client_socket.sendall(data)

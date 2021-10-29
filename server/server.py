@@ -35,6 +35,10 @@ def connection_handler(connection, address):
             data = dumps(utils.shutdown())
             connection.sendall(data)
 
+        elif req == 'logout':
+            data = dumps(utils.logout())
+            connection.sendall(data)
+
         elif req == 'getscreenshot':
             data = dumps(utils.get_screenshot())
             connection.sendall(data)
