@@ -76,8 +76,20 @@ class client_frame(tk.Frame):
 		
 		#Sửa registry
 
-		self.regedit_button = thm.Button(function_frame5, text="Sửa registry", width=15, command = self.registry_run)
-		self.regedit_button.pack(side="left", fill=tk.BOTH,padx = 5, pady = 5, expand = True)
+		self.regedit_button = thm.Button(function_frame5, text="Sửa registry", width=10, command = self.registry_run)
+		self.regedit_button.pack(side="left", fill=tk.Y,padx = 5, pady = 5)
+
+		#Xem địa chỉ MAC
+
+		self.get_macAddr = thm.Button(function_frame5, text="Xem địa chỉ MAC", width=15, command = self.getMAC_run)
+		self.get_macAddr.pack(side="left", fill=tk.Y, padx = 5, pady = 5)
+
+		##Khoá bàn phím
+
+		self.lock_keyboard_text = tk.StringVar()
+		self.lock_keyboard_text.set("Khoá\nbàn phím")
+		self.lock_keyboard = thm.Button(function_frame5, textvariable = self.lock_keyboard_text, width=10, command = self.lockKeyboard_run)
+		self.lock_keyboard.pack(side="left", fill=tk.Y,padx = 5, pady = 5)
 
 		#Thoát
 		self.exit_button = thm.Button(function_frame5, text="Thoát", width=10, command=self.parent.destroy)
@@ -126,6 +138,28 @@ class client_frame(tk.Frame):
 		self.top = tk.Toplevel(self.parent)
 		self.top.geometry("679x497+150+150")
 		self.app = registry.reg_frame(self.top)
+
+	#getMAC Run
+	def getMAC_run(self):
+		#if not self.status:
+		#	msbx.showerror("Kết nối đến Server", "Chưa kết nối đến Server.")
+		#	return None
+		msbx.showinfo("Get MAC Address", "Địa chỉ MAC của Server là: " + "XX-XX-XX-XX");
+
+	def lockKeyboard_run(self):
+		#if not self.status:
+		#	msbx.showerror("Kết nối đến Server", "Chưa kết nối đến Server.")
+		#	return None
+
+		if self.lock_keyboard_text.get() == "Khoá\nbàn phím":
+			msbx.showinfo(self.lock_keyboard_text, "Đã khoá bàn phím.")
+			self.lock_keyboard_text.set("Mở khoá\nbàn phím")
+			return None
+
+		if self.lock_keyboard_text.get() == "Mở khoá\nbàn phím":
+			msbx.showinfo(self.lock_keyboard_text, "Đã mở khoá bàn phím.")
+			self.lock_keyboard_text.set("Khoá\nbàn phím")
+			return None
 
 	#keylog_run
 	def keylog_run(self):
