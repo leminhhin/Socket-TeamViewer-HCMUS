@@ -66,6 +66,14 @@ class Client:
         res = loads(client_socket.recv(2**10))
         return res
 
+    def req_lock_keyboard(self):
+        data = dumps('lock-keyboard')
+        client_socket.sendall(data)
+
+    def req_unlock_keyboard(self):
+        data = dumps('unlock-keyboard')
+        client_socket.sendall(data)    
+
     def req_reg_getvalue(self, path, value_name):
         data = dumps(('reg-getvalue', path, value_name))
         client_socket.sendall(data)
