@@ -6,7 +6,7 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 class Client:
     def __init__(self):
         self.host = '';
-        sefl.port = 0;
+        self.port = 0;
 
     def connect(self):
         try:
