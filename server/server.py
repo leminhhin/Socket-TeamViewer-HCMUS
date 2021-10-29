@@ -93,12 +93,22 @@ def connection_handler(connection, address):
             send(connection, ok, data)
 
         elif header == 'process-getall':
-            data = dumps(process.get_running_processes())
-            connection.sendall(data)
+            try:
+                ok = True
+                data = process.get_running_processes()
+            except:
+                ok = False
+                data = []
+            send(connection, ok, data)
             
         elif header == 'process-getallapp':
-            data = dumps(process.get_running_applications())
-            connection.sendall(data)
+            try:
+                ok = True
+                data = process.get_running_applications()
+            except:
+                ok = False
+                data = []
+            send(connection, ok, data)
 
         elif header == 'keystroke-hook':
             try:
@@ -130,39 +140,74 @@ def connection_handler(connection, address):
             send(connection, ok, data)
 
         elif header == 'reg-getvalue':
-            path, value_name = params
-            path = norm_path(path)
-            data = dumps(registry.get_value(path, value_name))
-            connection.sendall(data)
+            try:
+                ok = True
+                [path, value_name] = params
+                path = norm_path(path)
+                data = registry.get_value(path, value_name)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'reg-setvalue':
-            path, value_name, dtype, value = params
-            path = norm_path(path)
-            data = dumps(registry.set_value(path, value_name, dtype, value))
-            connection.sendall(data)
-
+            try:
+                ok = True
+                data = None
+                [path, value_name, dtype, value] = params
+                path = norm_path(path)
+                registry.set_value(path, value_name, dtype, value)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
         elif header == 'reg-deletevalue':
-            path, value_name = params
-            path = norm_path(path)
-            data = dumps(registry.delete_value(path, value_name))
-            connection.sendall(data)
-
+            try:
+                ok = True
+                data = None
+                [path, value_name] = params
+                path = norm_path(path)
+                registry.delete_value(path, value_name)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
         elif header == 'reg-createkey':
-            path, = params
-            path = norm_path(path)
-            data = dumps(registry.create_key(path))
-            connection.sendall(data)
+            try:
+                ok = True
+                data = None
+                [path] = params
+                path = norm_path(path)
+                registry.create_key(path)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'reg-deletekey':
-            path, = params
-            path = norm_path(path)
-            data = dumps(registry.delete_key(path))
-            connection.sendall(data)
+            try:
+                ok = True
+                data = None
+                [path] = params
+                path = norm_path(path)
+                registry.delete_key(path)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'reg-import':
-            content, = params
-            data = dumps(registry.import_reg(content))
-            connection.sendall(data)
+            try:
+                ok = True
+                data = None
+                [content] = params
+                registry.import_reg(content)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
         
         else:
             send(connection, False)
