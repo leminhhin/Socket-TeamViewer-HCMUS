@@ -113,12 +113,24 @@ def connection_handler(connection, address):
             connection.sendall(data)
 
         elif header == 'lock-keyboard':
-            data = dumps(lock_keyboard.enable())
-            connection.sendall(data)
+            try:
+                lock_keyboard.enable()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'unlock-keyboard':
-            data = dumps(lock_keyboard.disable())
-            connection.sendall(data)
+            try:
+                lock_keyboard.disable()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'reg-getvalue':
             path, value_name = params
