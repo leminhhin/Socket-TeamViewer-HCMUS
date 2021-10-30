@@ -2,6 +2,7 @@ import os
 from pickle import loads, dumps
 import socket
 import threading
+from struct import pack, unpack
 import utils, process, keystroke, registry, mac, lock_keyboard, dirtree
 
 HOST = socket.gethostname()
@@ -21,16 +22,21 @@ def check_request(req):
 
 def send(conn, ok, data=None):
     res = {'ok': ok, 'data': data}
-    conn.sendall(dumps(res))
+    msg = dumps(res)
+    length = pack('>Q', len(msg))
+    conn.sendall(length)
+    conn.sendall(msg)
 
 
 def recv(conn, BUF_SIZE=4096):
-    data = b''
-    while True:
+    length, = unpack('>Q', conn.recv(8))
+    data = []
+    length_recv = 0
+    while length_recv < length:
         part = conn.recv(BUF_SIZE)
-        data += part    
-        if len(part) < BUF_SIZE:
-            break
+        length_recv += len(part)
+        data.append(part)
+    data = b''.join(data)
     return loads(data)
 
 

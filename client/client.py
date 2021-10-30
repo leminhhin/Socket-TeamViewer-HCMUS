@@ -1,20 +1,26 @@
 import socket
 from pickle import dumps, loads
+from struct import pack, unpack
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def send(header, params=[]):
     req = {'header': header, 'params': params}
-    client_socket.sendall(dumps(req))
+    msg = dumps(req)
+    length = pack('>Q', len(msg))
+    client_socket.sendall(length)
+    client_socket.sendall(msg)
     
     
-def recv(BUF_SIZE=4096):
-    data = b''
-    while True:
+def recv(BUF_SIZE=2**10):
+    length, = unpack('>Q', client_socket.recv(8))
+    data = []
+    length_recv = 0
+    while length_recv < length:
         part = client_socket.recv(BUF_SIZE)
-        data += part    
-        if len(part) < BUF_SIZE:
-            break
+        length_recv += len(part)
+        data.append(part)
+    data = b''.join(data)
     return loads(data)
 
 
