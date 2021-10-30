@@ -76,6 +76,12 @@ class Client:
         res = recv()
         return res['data']
 
+    def req_lock_keyboard(self):
+        send('lock-keyboard')
+
+    def req_unlock_keyboard(self):
+        send('unlock-keyboard')   
+
     def req_reg_getvalue(self, path, value_name):
         send('reg-getvalue', [path, value_name])
         res = recv()
