@@ -17,4 +17,16 @@ def list_drives():
     return [drive.replace('\\', '') for drive in 
         win32api.GetLogicalDriveStrings().split('\000')[:-1]]
     
+    
+def append_file(filepath, buffer):
+    with open(filepath, 'ab') as f:
+        f.write(buffer)
+        
 
+def read_file(filepath):
+    with open(filepath, 'rb') as f:
+        while True:
+            buffer = f.read(1024)
+            if not buffer:
+                break
+            yield buffer

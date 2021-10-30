@@ -270,6 +270,42 @@ def connection_handler(connection, address):
                 ok = False
                 data = []
             send(connection, ok, data)
+            
+        elif header == 'dirtree-client2server-start':
+            try:
+                ok = True
+                data = None
+                send(connection, True)
+                filepath = params[0]
+                if os.path.isfile(filepath):
+                    os.remove(filepath)
+                
+                while True:
+                    res = recv(connection)
+                    if res['header'] == 'dirtree-client2server-end':
+                        break
+                    buffer = res['params'][0]
+                    dirtree.append_file(filepath, buffer)
+                    send(connection, True)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-server2client-start':
+            try:
+                ok = True
+                data = None
+                filepath = params[0]
+                for buffer in dirtree.read_file(filepath):
+                    send(connection, True, buffer)
+                    res = recv(connection)
+                    if res['header'] != 'dirtree-server2client-ok':
+                        raise Exception()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         else:
             send(connection, False)

@@ -1,3 +1,4 @@
+import os
 import socket
 from pickle import dumps, loads
 from struct import pack, unpack
@@ -132,3 +133,35 @@ class Client:
         send('dirtree-getdrives')
         res = recv()
         return res['data']
+    
+    def req_dirtree_client2server(self, src, dst):
+        send('dirtree-client2server-start', [dst])
+        res = recv()
+        if not res['ok']:
+            return False 
+        with open(src, 'rb') as f:
+            while True:
+                buffer = f.read(1024)
+                if not buffer:
+                    break
+                send('dirtree-client2server-append', [buffer])
+                res = recv()
+                if not res['ok']:
+                    return False
+        send('dirtree-client2server-end')    
+        
+    def req_dirtree_server2client(self, src, dst):
+        send('dirtree-server2client-start', [src])
+        if os.path.isfile(dst):
+            os.remove(dst)
+        with open(dst, 'ab') as f:
+            while True:
+                res = recv()
+                if not res['ok']:
+                    return False
+                buffer = res['data']
+                if not buffer:
+                    break
+                f.write(buffer)
+                send('dirtree-server2client-ok')
+        
