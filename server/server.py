@@ -52,10 +52,8 @@ def connection_handler(connection, address):
             else:
                 header, params = req['header'], req['params']
                 print('Client request:', header)
-        except EOFError:
+        except:
             break
-        except Exception as e:
-            raise e
             
         if header == 'shutdown':
             try:
