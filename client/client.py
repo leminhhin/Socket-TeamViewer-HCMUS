@@ -105,3 +105,8 @@ class Client:
         send('reg-import', [content])
         res = recv()
         return res['ok']
+
+    def req_mac_address(self):
+        send('mac-address')
+        res = recv()
+        return res['data']
