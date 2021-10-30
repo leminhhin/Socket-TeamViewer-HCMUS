@@ -116,3 +116,13 @@ class Client:
         send('mac-address')
         res = recv()
         return res['data']
+    
+    def req_dirtree_getfiles(self, root):
+        send('dirtree-getfiles', [root])
+        res = recv()
+        return res['data']
+    
+    def req_dirtree_getdrives(self):
+        send('dirtree-getdrives')
+        res = recv()
+        return res['data']

