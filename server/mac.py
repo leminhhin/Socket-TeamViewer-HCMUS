@@ -1,6 +1,5 @@
-import netifaces
+from getmac import get_mac_address as gma
 
 def get_address():
-    mac = netifaces.ifaddresses('en0')[netifaces.AF_LINK]
-    addrs = mac.pop()['addrs']
-    return addrs
+    mac = gma()
+    return mac
