@@ -12,7 +12,7 @@ def send(header, params=[]):
     client_socket.sendall(msg)
     
     
-def recv(BUF_SIZE=2**10):
+def recv(BUF_SIZE=1024):
     length, = unpack('>Q', client_socket.recv(8))
     data = []
     length_recv = 0

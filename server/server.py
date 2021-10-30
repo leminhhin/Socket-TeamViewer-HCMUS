@@ -28,7 +28,7 @@ def send(conn, ok, data=None):
     conn.sendall(msg)
 
 
-def recv(conn, BUF_SIZE=4096):
+def recv(conn, BUF_SIZE=1024):
     length, = unpack('>Q', conn.recv(8))
     data = []
     length_recv = 0
