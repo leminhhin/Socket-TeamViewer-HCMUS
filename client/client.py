@@ -37,6 +37,9 @@ class Client:
     def req_shutdown(self):
         send('shutdown')
 
+    def req_logout(self):
+        send('logout')
+
     def req_get_screenshot(self):
         send('getscreenshot')
         res = recv()

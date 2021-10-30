@@ -61,6 +61,16 @@ def connection_handler(connection, address):
                 data = None
             send(connection, ok, data)
 
+        elif header == 'logout':
+            try:
+                utils.logout()
+                ok = True
+                data = None
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+
         elif header == 'getscreenshot':
             try:
                 ok = True
