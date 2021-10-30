@@ -7,7 +7,7 @@ mon = {'left': 0, 'top': 0, 'width': 1440, 'height': 900}
 
 SCREEN_SIZE = (1440, 900)
 # define the codec
-fourcc = cv2.VideoWriter_fourcc('X','2','6','4')
+fourcc = cv2.VideoWriter_fourcc('H','2','6','4')
 # create the video write object
 out = cv2.VideoWriter("output.avi", fourcc, 20.0, (SCREEN_SIZE))
 
