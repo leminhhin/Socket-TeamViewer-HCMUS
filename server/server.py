@@ -1,4 +1,5 @@
 import os
+import shutil
 from pickle import loads, dumps
 import socket
 import threading
@@ -301,6 +302,17 @@ def connection_handler(connection, address):
                     res = recv(connection)
                     if res['header'] != 'dirtree-server2client-ok':
                         raise Exception()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-server2server':
+            try:
+                ok = True
+                data = None
+                [src, dst] = params
+                shutil.copy(src, dst)
             except:
                 ok = False
                 data = None

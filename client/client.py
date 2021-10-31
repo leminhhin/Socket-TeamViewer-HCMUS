@@ -164,6 +164,11 @@ class Client:
                     break
                 f.write(buffer)
                 send('dirtree-server2client-ok')
+                
+    def req_dirtree_server2server(self, src, dst):
+        send('dirtree-server2server', [src, dst])
+        res = recv()
+        return res['ok']
         
     def req_dirtree_deletefile(self, filepath):
         send('dirtree-deletefile', [filepath])
