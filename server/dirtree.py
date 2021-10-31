@@ -30,3 +30,8 @@ def read_file(filepath):
             if not buffer:
                 break
             yield buffer
+            
+            
+def delete_file(filepath):
+    if os.path.isfile(filepath):
+        os.remove(filepath)

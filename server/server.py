@@ -277,8 +277,7 @@ def connection_handler(connection, address):
                 data = None
                 send(connection, True)
                 filepath = params[0]
-                if os.path.isfile(filepath):
-                    os.remove(filepath)
+                dirtree.delete_file(filepath)
                 
                 while True:
                     res = recv(connection)
@@ -302,6 +301,17 @@ def connection_handler(connection, address):
                     res = recv(connection)
                     if res['header'] != 'dirtree-server2client-ok':
                         raise Exception()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-deletefile':
+            try:
+                ok = True
+                data = None
+                filepath = params[0]
+                dirtree.delete_file(filepath)
             except:
                 ok = False
                 data = None
