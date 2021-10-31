@@ -1,4 +1,5 @@
 import os
+import shutil
 from pickle import loads, dumps
 import socket
 import threading
@@ -269,6 +270,63 @@ def connection_handler(connection, address):
             except:
                 ok = False
                 data = []
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-client2server-start':
+            try:
+                ok = True
+                data = None
+                send(connection, True)
+                filepath = params[0]
+                dirtree.delete_file(filepath)
+                
+                while True:
+                    res = recv(connection)
+                    if res['header'] == 'dirtree-client2server-end':
+                        break
+                    buffer = res['params'][0]
+                    dirtree.append_file(filepath, buffer)
+                    send(connection, True)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-server2client-start':
+            try:
+                ok = True
+                data = None
+                filepath = params[0]
+                for buffer in dirtree.read_file(filepath):
+                    send(connection, True, buffer)
+                    res = recv(connection)
+                    if res['header'] != 'dirtree-server2client-ok':
+                        raise Exception()
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-server2server':
+            try:
+                ok = True
+                data = None
+                [src, dst] = params
+                shutil.copy(src, dst)
+            except:
+                ok = False
+                data = None
+            send(connection, ok, data)
+            
+        elif header == 'dirtree-deletefile':
+            try:
+                ok = True
+                data = None
+                filepath = params[0]
+                dirtree.delete_file(filepath)
+            except:
+                ok = False
+                data = None
             send(connection, ok, data)
 
         else:
