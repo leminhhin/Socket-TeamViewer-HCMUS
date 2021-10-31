@@ -20,17 +20,20 @@ class client_frame(tk.Frame):
 
 	def make_widgets(self):
 		#Nhập địa chỉ IP
-		ip_frame = tk.Frame(self)
-		ip_frame.pack(fill=tk.X)
+		self.ip_frame = tk.Frame(self)
+		self.ip_frame.pack(fill=tk.X)
 		
-		ip_label = thm.Label(ip_frame, text="Nhập địa chỉ IP:", width=15)
+		ip_label = thm.Label(self.ip_frame, text="Nhập địa chỉ IP:", width=15)
 		ip_label.pack(side="left")
 		
-		self.ip_entry = thm.Entry(ip_frame)
+		self.ip_entry = thm.Entry(self.ip_frame)
 		self.ip_entry.pack(fill = tk.X, side="left", padx = 10, expand = True)
 
-		self.ip_button = thm.Button(ip_frame, text="OK", width=13, command = self.ip_connect)
+		self.ip_button = thm.Button(self.ip_frame, text="OK", width=13, command = self.ip_connect)
 		self.ip_button.pack(side="right")
+
+		self.ipAddr_frame = tk.Frame(self)
+		self.ipAddr_frame.pack(fill = tk.X)
 		
 		#Tạo Khung Frame
 		function_frame = tk.Frame(self)
@@ -53,7 +56,7 @@ class client_frame(tk.Frame):
 		
 		#Process Running
 
-		self.process_running_button = thm.Button(function_frame, text="Process\nRunning", width=15, command=self.process_run)
+		self.process_running_button = thm.Button(function_frame, text="Process\nRunning", width=10, command=self.process_run)
 		self.process_running_button.pack(side="left",fill = tk.Y, padx = 5, pady = 5)
 		
 		#App Running
@@ -65,31 +68,45 @@ class client_frame(tk.Frame):
 
 		self.shut_down_button = thm.Button(function_frame4, text = "Tắt\nmáy", width = 1, command=self.shut_down)
 		self.shut_down_button.pack(side="left", fill=tk.BOTH, padx = 5, pady = 5, expand = True)
+
+		#Log out
+
+		self.log_out_button = thm.Button(function_frame4, text = "Log\nout", width = 1, command=self.log_out)
+		self.log_out_button.pack(side="left", fill=tk.BOTH, padx = 5, pady = 5, expand = True)
 		
 		#Chụp màn hình
-		self.prt_screen_button = thm.Button(function_frame4, text = "Chụp màn hình", width = 15, command=self.screenshot)
+		self.prt_screen_button = thm.Button(function_frame4, text = "Chụp\nmàn hình", width = 5, command=self.screenshot)
 		self.prt_screen_button.pack(side="right", fill=tk.BOTH, padx = 5, pady = 5, expand=True)
+
+		#Live màn hình
+		self.screen_live_button = thm.Button(function_frame4, text = "Live\nmàn hình", width = 5, command=None)
+		self.screen_live_button.pack(side="right", fill=tk.BOTH, padx = 5, pady = 5, expand=True)
 		
 		#Key Log
-		self.key_stroke_button = thm.Button(function_frame2, text = "Keystroke", width = 20, command=self.keylog_run)
+		self.key_stroke_button = thm.Button(function_frame2, text = "Keystroke", width = 15, command=self.keylog_run)
 		self.key_stroke_button.pack(side="right", fill=tk.BOTH, anchor = tk.NE, padx = 5, pady = 5)
 		
 		#Sửa registry
 
-		self.regedit_button = thm.Button(function_frame5, text="Sửa registry", width=10, command = self.registry_run)
-		self.regedit_button.pack(side="left", fill=tk.Y,padx = 5, pady = 5)
+		self.regedit_button = thm.Button(function_frame5, text="Sửa registry", width=1, command = self.registry_run)
+		self.regedit_button.pack(side="left", fill=tk.BOTH,padx = 5, pady = 5, expand = True)
 
 		#Xem địa chỉ MAC
 
-		self.get_macAddr = thm.Button(function_frame5, text="Xem địa chỉ MAC", width=15, command = self.getMAC_run)
-		self.get_macAddr.pack(side="left", fill=tk.Y, padx = 5, pady = 5)
+		self.get_macAddr = thm.Button(function_frame5, text="Xem\nđịa chỉ MAC", width=1, command = self.getMAC_run)
+		self.get_macAddr.pack(side="left", fill=tk.BOTH, padx = 5, pady = 5, expand = True)
+
+		#Cây thư mục
+
+		self.explorer = thm.Button(function_frame5, text="Cây thư mục", width=1, command = None)
+		self.explorer.pack(side="left", fill=tk.BOTH, padx = 5, pady = 5, expand = True)
 
 		##Khoá bàn phím
 
 		self.lock_keyboard_text = tk.StringVar()
 		self.lock_keyboard_text.set("Khoá\nbàn phím")
-		self.lock_keyboard = thm.Button(function_frame5, textvariable = self.lock_keyboard_text, width=10, command = self.lockKeyboard_run)
-		self.lock_keyboard.pack(side="left", fill=tk.Y,padx = 5, pady = 5)
+		self.lock_keyboard = thm.Button(function_frame5, textvariable = self.lock_keyboard_text, width=1, command = self.lockKeyboard_run)
+		self.lock_keyboard.pack(side="left", fill=tk.BOTH,padx = 5, pady = 5, expand = True)
 
 		#Thoát
 		self.exit_button = thm.Button(function_frame5, text="Thoát", width=10, command=self.parent.destroy)
@@ -109,6 +126,8 @@ class client_frame(tk.Frame):
 		self.status = res
 		if res:
 			msbx.showinfo("Kết nối đến Server", " Kết nối thành công.")
+			self.ipAddr_label = thm.Label(self.ipAddr_frame, text = "Đã kết nối đến địa chỉ IP: " + ip_address)
+			self.ipAddr_label.pack(fill = tk.X, side="bottom", padx = 5, pady = 5, expand = True)
 		else:
 			msbx.showerror("Kết nối đến Server", "Kết nối thất bại.")
 		
@@ -152,12 +171,12 @@ class client_frame(tk.Frame):
 		#	return None
 
 		if self.lock_keyboard_text.get() == "Khoá\nbàn phím":
-			msbx.showinfo(self.lock_keyboard_text, "Đã khoá bàn phím.")
+			msbx.showinfo("Khóa bàn phím", "Đã khoá bàn phím.")
 			self.lock_keyboard_text.set("Mở khoá\nbàn phím")
 			return None
 
 		if self.lock_keyboard_text.get() == "Mở khoá\nbàn phím":
-			msbx.showinfo(self.lock_keyboard_text, "Đã mở khoá bàn phím.")
+			msbx.showinfo("Mở khóa bàn phím", "Đã mở khoá bàn phím.")
 			self.lock_keyboard_text.set("Khoá\nbàn phím")
 			return None
 
@@ -180,14 +199,23 @@ class client_frame(tk.Frame):
 		self.app = pic.pic_frame(self.top)
 
 	#Shut down
+	def log_out(self):
+		if not self.status:
+			msbx.showerror("Kết nối đến Server", "Chưa kết nối đến Server.")
+			return None
+		msbx.showinfo("Logout", "Đã log out.")
+		self.ipAddr_label.destroy()
+
+	#Shut down
 	def shut_down(self):
 		if not self.status:
 			msbx.showerror("Kết nối đến Server", "Chưa kết nối đến Server.")
 			return None
 		self.tmp_client.req_shutdown(self.tmp_client)
 		msbx.showinfo("Shutdown", "Server đã shut down.")
+		self.ipAddr_label.destroy()
 		
 root = tk.Tk()
-root.geometry("582x426+10+10")
+root.geometry("679x497")
 app = client_frame(root)
 app.mainloop()
