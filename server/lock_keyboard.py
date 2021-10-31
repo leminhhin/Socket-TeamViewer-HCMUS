@@ -1,8 +1,18 @@
-from ctypes import *
+import keyboard
+from time import sleep
+import threading
 
 def enable():
-    windll.user32.BlockInput(True) #enable block
-        
+    t1 = threading.Thread(target=block_input_start)
+    t1.start()
+
 def disable():
-    windll.user32.BlockInput(False) #disable block
+    block_input_stop()
     
+def block_input_start():
+    for i in range(150):
+        keyboard.block_key(i)
+
+def block_input_stop():
+    for i in range(150):
+        keyboard.unblock_key(i)
