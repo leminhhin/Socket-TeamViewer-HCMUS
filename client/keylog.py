@@ -49,7 +49,7 @@ class keylog_frame(tk.Frame):
 	def print_keylog(self):
 		self.keylog_text['state'] = 'normal'
 		self.keys = self.tmp_client.req_keystroke_get(self)
-		self.keylog_text.insert(tk.INSERT, self.keys)
+		# self.keylog_text.insert(tk.INSERT, self.keys)
 		self.keylog_text['state'] = 'disable'
 
 	def delete_keylog(self):

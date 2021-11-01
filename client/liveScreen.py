@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 import pyautogui
 import client
 
-class pic_frame(tk.Frame):
+class live_frame(tk.Frame):
 	def __init__(self, parent):
 		super().__init__(parent)
 
@@ -14,7 +14,8 @@ class pic_frame(tk.Frame):
 		self.pack(fill = tk.BOTH, expand = True)
 		self.make_widgets()
 		self.img = None
-		self.label = None
+		self.label = thm.Label(self.frame2)
+		self.record = False
 		self.tmp_client = client.Client
 		self.parent.title("Chụp màn hình")
 
@@ -36,33 +37,29 @@ class pic_frame(tk.Frame):
 		frame5.pack(fill = tk.Y)
 
 		#Tạo widgets
-		self.shot = thm.Button(frame4, text="Chụp", command=self.shot_image)
+		self.shot = thm.Button(frame4, text="Bắt đầu quay", command=self.shot_image)
 		self.shot.pack(fill=tk.BOTH, pady = 20, expand = True)
 
-		self.save = thm.Button(frame5, text="Lưu", command=self.save_image)
+		self.save = thm.Button(frame5, text="Dừng quay", command=self.stop_record)
 		self.save.pack(fill=tk.BOTH, ipady = 20, pady = 20, expand=True)
 
 		#Chụp
 	def shot_image(self):
-		if self.img != None:
-			self.label.destroy()
+		self.record = True
 		try:
-			self.img = self.tmp_client.req_get_screenshot(self.tmp_client)
+			while self.record:
+				self.img = self.tmp_client.req_get_screenshot(self.tmp_client)
+				self.resized_img = self.img.resize((433, 255))
+				self.tatras = ImageTk.PhotoImage(self.resized_img)
+				self.label = thm.Label(self.frame2, image=self.tatras)
+				self.label.pack()
+				self.pack()
+				self.label.destroy()
 		except:
 			return None
 		if not self.img:
 			msbx.showerror("Screenshot", "Không thể chụp màn hình")
-		self.resized_img = self.img.resize((433, 255))
-		self.tatras = ImageTk.PhotoImage(self.resized_img)
-		self.label = thm.Label(self.frame2, image=self.tatras)
-		self.label.pack()
-		self.pack()
-	def save_image(self):
-		if not self.img:
-			msbx.showerror('', "Không thể chụp màn hình")
-			return None
-		ftypes = [('Image Files', '*.jpg *.png *.heic')]
-		save_path = file_dlg.asksaveasfilename(filetypes = ftypes)
-		if save_path:
-			self.img.save(save_path)
-		return None
+		
+
+	def stop_record(self):
+		self.record = False

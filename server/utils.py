@@ -3,15 +3,17 @@ import pyautogui
 
 
 def shutdown():
-    try:
-        subprocess.Popen('shutdown /s /t 1', shell=True, stdout=subprocess.PIPE)
-        return True
-    except:
-        return False
+    #subprocess.Popen('shutdown /s /t 1', shell=True, stdout=subprocess.PIPE)
+    # /f: force quit all running apps
+    # /s: shutdown
+    # /t <number>: time before shutdown 
+    subprocess.call(['shutdown', '-f', '-s', '-t', '1'])
 
+def logout():
+    # /f: force quit all running apps
+    # /l: logout
+    # /t <number>: time before logout 
+    subprocess.call(['shutdown', '-f', '-l', '-t', '1'])
 
 def get_screenshot():
-    try:
-        return pyautogui.screenshot()
-    except:
-        return None
+    return pyautogui.screenshot()

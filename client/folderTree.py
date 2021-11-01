@@ -1,7 +1,10 @@
 import os
-from posixpath import abspath
 import tkinter as tk
+from tkinter.constants import NO, S
 import tkinter.ttk as thm
+from client import Client
+import tkinter.filedialog as file_dlg
+import tkinter.messagebox as msbx
 
 class folder_tree(tk.Frame):
     def __init__(self, parent):
@@ -13,64 +16,91 @@ class folder_tree(tk.Frame):
         self.parent.title("Cây thư mục")
 
     def make_widget(self):
-        self.nodes = dict()
+        global nodes
+        nodes = dict()
         
         self.frame = tk.Frame(self)
         self.frame.pack(fill=tk.BOTH, padx=10, pady=10, expand=True)
 
-        self.tree = thm.Treeview(self.frame)
+        global tree
+        tree = thm.Treeview(self.frame)
         # self.yScrollBar = thm.Scrollbar(self.frame, orient='vertical',command=self.tree.yview)
         # self.xScrollBar = thm.Scrollbar(self.frame, orient='horizontal',command=self.tree.xview)
         # self.tree.configure(yscroll=self.yScrollBar.set, xscroll=self.xScrollBar.set)
-        self.tree.heading('#0', text="Cây thư mục", anchor="w")
+        tree.heading('#0', text="Cây thư mục", anchor="w")
 
         # self.tree.grid(row=0, column=0, sticky="nsew")
         # self.yScrollBar.grid(row=0, column=1, sticky='ns')
         # self.xScrollBar.grid(row=1, column=0, sticky='ew')
 
-        self.tree.pack(fill=tk.BOTH, pady=10, padx=10, expand=True)
+        tree.pack(fill=tk.BOTH, pady=10, padx=10, expand=True)
 
-        self.abspath = os.path.abspath("\\")
-        self.insert_node('', self.abspath, self.abspath)
+        self.drive = Client.req_dirtree_getdrives(self)
+
+        for i in self.drive:
+            self.insert_node('', i + "\\", i + "\\")
         self.rightClick = RightClick(self.parent)
-        self.tree.bind('<<TreeviewOpen>>', self.open_node)
-        self.tree.bind('<Button-3>', self.rightClick.popup)
+        tree.bind('<<TreeviewOpen>>', self.open_node)
+        tree.bind('<Button-3>', self.rightClick.popup)
         
     def insert_node(self, parent, text, abspath):
-        node = self.tree.insert(parent, 'end', text=text, open=False)
-        if os.path.isdir(abspath):
-            self.nodes[node] = abspath
-            self.tree.insert(node, 'end')
+        node = tree.insert(parent, 'end', text=text, open=False)
+        nodes[node] = abspath
+        tree.insert(node, 'end')
 
     def open_node(self, event):
-        node = self.tree.focus()
-        abspath = self.nodes.pop(node, None)
+        node = tree.focus()
+        abspath = nodes.pop(node, None)
         if abspath:
-            self.tree.delete(self.tree.get_children(node))
-            for p in os.listdir(abspath):
-                self.insert_node(node, p, os.path.join(abspath, p))
+            tree.delete(tree.get_children(node))
+            listDir = Client.req_dirtree_getfiles('', abspath)
+            for p in listDir['folders']:
+                self.insert_node(node, p, abspath + '\\' + p)
+            for p in listDir['files']:
+                self.insert_node(node, p, abspath + '\\' + p)
 
 class RightClick:
     def __init__(self, parent):
-        
+            
         self.aMenu = tk.Menu(parent, tearoff = 0)
-        self.aMenu.add_command(label="Delete", command=self.delete)
-        self.aMenu.add_command(label="Copy", command=self.copy)
+        self.aMenu.add_command(label="Xóa", command=self.delete)
+        self.aMenu.add_command(label="Sao chép từ Server tới Client", command=self.copyServer2Client)
+        self.aMenu.add_command(label="Sao chép từ Client tới Server", command=self.copyClient2Server)
 
         self.tree_item = ''
 
     def delete(self):
+        abspath = nodes.pop(self.tree_item, None)
         if self.tree_item:
-            app.tree.delete(self.tree_item)
+            res = Client.req_dirtree_deletefile(self, abspath)
+            if res:
+                tree.delete(self.tree_item)
+                msbx.showinfo('Xóa', "Xóa thành công.")
+            else:
+                msbx.showinfo('Xóa', "Xóa thất bại")
 
-    def copy(self):
-        print("Copying...")
+
+    def copyServer2Client(self):
+        abspath = nodes.pop(self.tree_item, None)
+        save_path = file_dlg.askdirectory(title="Save to...")
+        if abspath and save_path:
+            res = Client.req_dirtree_server2client(self, abspath, save_path)
+            if res:
+                msbx.showinfo('Sao chép từ Server tới Client', "Đã sao chép thành công.")
+            else:
+                msbx.showinfo('Sao chép từ Server tới Client', "Không thế sao chép tập tin.")
+
+    def copyClient2Server(self):
+        abspath = nodes.pop(self.tree_item, None)
+        file_path = file_dlg.askopenfilename(title="Select file to copy")
+        if abspath and file_path:
+            res = Client.req_dirtree_client2server(self, file_path, abspath)
+            if res:
+                msbx.showinfo('Sao chép từ CLient tới Server', "Đã sao chép thành công.")
+            else:
+                msbx.showinfo('Sao chép từ CLient tới Server', "Không thế sao chép tập tin.")
+
 
     def popup(self, event):
         self.aMenu.post(event.x_root, event.y_root)
-        self.tree_item = app.tree.focus()
-
-root = tk.Tk()
-root.geometry("679x497")
-app = folder_tree(root)
-app.mainloop()
+        self.tree_item = tree.focus()
