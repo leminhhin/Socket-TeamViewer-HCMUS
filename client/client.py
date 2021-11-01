@@ -135,6 +135,7 @@ class Client:
         return res['data']
     
     def req_dirtree_client2server(self, src, dst):
+        dst = os.path.join(dst, os.path.basename(src))
         send('dirtree-client2server-start', [dst])
         res = recv()
         if not res['ok']:
@@ -149,8 +150,10 @@ class Client:
                 if not res['ok']:
                     return False
         send('dirtree-client2server-end')    
-        
+        return True
+         
     def req_dirtree_server2client(self, src, dst):
+        dst = os.path.join(dst, os.path.basename(src))
         send('dirtree-server2client-start', [src])
         if os.path.isfile(dst):
             os.remove(dst)
@@ -164,8 +167,10 @@ class Client:
                     break
                 f.write(buffer)
                 send('dirtree-server2client-ok')
-                
+        return True
+    
     def req_dirtree_server2server(self, src, dst):
+        dst = os.path.join(dst, os.path.basename(src))
         send('dirtree-server2server', [src, dst])
         res = recv()
         return res['ok']

@@ -312,8 +312,14 @@ def connection_handler(connection, address):
                 ok = True
                 data = None
                 [src, dst] = params
+                if os.path.isfile(dst) and os.path.samefile(src, dst):
+                    pos = dst.rfind('.')
+                    if pos == -1:
+                        pos = len(dst)
+                    dst = dst[:pos] + ' copy' + dst[pos:]
                 shutil.copy(src, dst)
             except:
+                raise
                 ok = False
                 data = None
             send(connection, ok, data)
