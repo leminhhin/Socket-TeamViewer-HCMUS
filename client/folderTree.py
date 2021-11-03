@@ -24,14 +24,7 @@ class folder_tree(tk.Frame):
 
         global tree
         tree = thm.Treeview(self.frame)
-        # self.yScrollBar = thm.Scrollbar(self.frame, orient='vertical',command=self.tree.yview)
-        # self.xScrollBar = thm.Scrollbar(self.frame, orient='horizontal',command=self.tree.xview)
-        # self.tree.configure(yscroll=self.yScrollBar.set, xscroll=self.xScrollBar.set)
         tree.heading('#0', text="Cây thư mục", anchor="w")
-
-        # self.tree.grid(row=0, column=0, sticky="nsew")
-        # self.yScrollBar.grid(row=0, column=1, sticky='ns')
-        # self.xScrollBar.grid(row=1, column=0, sticky='ew')
 
         tree.pack(fill=tk.BOTH, pady=10, padx=10, expand=True)
 
@@ -64,6 +57,8 @@ class RightClick:
             
         self.aMenu = tk.Menu(parent, tearoff = 0)
         self.aMenu.add_command(label="Xóa", command=self.delete)
+        self.aMenu.add_command(label="Sao chép", command=self.copy)
+        self.aMenu.add_command(label="Dán", command=self.paste)
         self.aMenu.add_command(label="Sao chép từ Server tới Client", command=self.copyServer2Client)
         self.aMenu.add_command(label="Sao chép từ Client tới Server", command=self.copyClient2Server)
 
@@ -77,8 +72,25 @@ class RightClick:
                 tree.delete(self.tree_item)
                 msbx.showinfo('Xóa', "Xóa thành công.")
             else:
-                msbx.showinfo('Xóa', "Xóa thất bại")
+                msbx.showinfo('Xóa', "Xóa thất bại.")
 
+    def copy(self):
+        abspath = nodes.pop(self.tree_item, None)
+        self.copyPath = abspath
+
+    def paste(self):
+        if self.copyPath == None:
+            msbx.showinfo("Dán", "Chưa chọn tập tin để sao chép.")
+            return None
+        save_path = nodes.pop(self.tree_item, None)
+        abspath = self.copyPath
+        if abspath and save_path:
+            res = Client.req_dirtree_server2server(self, abspath, save_path)
+            if res:
+                msbx.showinfo('Sao chép', "Đã sao chép thành công.")
+                self.copyPath = None
+            else:
+                msbx.showinfo('Sao chép', "Không thế sao chép tập tin.")
 
     def copyServer2Client(self):
         abspath = nodes.pop(self.tree_item, None)

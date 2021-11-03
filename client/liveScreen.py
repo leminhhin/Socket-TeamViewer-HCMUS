@@ -1,10 +1,11 @@
-import tkinter as tk
+import tkinter as tk, threading
 import tkinter.ttk as thm
 import tkinter.messagebox as msbx
 import tkinter.filedialog as file_dlg
 from PIL import Image, ImageTk
 import pyautogui
 import client
+import imageio
 
 class live_frame(tk.Frame):
 	def __init__(self, parent):
@@ -13,7 +14,10 @@ class live_frame(tk.Frame):
 		self.parent = parent
 		self.pack(fill = tk.BOTH, expand = True)
 		self.make_widgets()
-		self.img = None
+		self.video_name = "D:\Su-That-Sau-Mot-Loi-Hua.mp4"
+		global video
+		video = imageio.get_reader(self.video_name)
+		
 		self.label = thm.Label(self.frame2)
 		self.record = False
 		self.tmp_client = client.Client
@@ -43,23 +47,22 @@ class live_frame(tk.Frame):
 		self.save = thm.Button(frame5, text="Dừng quay", command=self.stop_record)
 		self.save.pack(fill=tk.BOTH, ipady = 20, pady = 20, expand=True)
 
-		#Chụp
-	def shot_image(self):
+	def stream(self, label):
+
 		self.record = True
-		try:
-			while self.record:
-				self.img = self.tmp_client.req_get_screenshot(self.tmp_client)
-				self.resized_img = self.img.resize((433, 255))
-				self.tatras = ImageTk.PhotoImage(self.resized_img)
-				self.label = thm.Label(self.frame2, image=self.tatras)
-				self.label.pack()
-				self.pack()
-				self.label.destroy()
-		except:
-			return None
-		if not self.img:
-			msbx.showerror("Screenshot", "Không thể chụp màn hình")
-		
+		while self.record:
+			img = self.tmp_client.req_get_screenshot(self.tmp_client)
+			resized_img = img.resize((800, 450))
+			frame_image = ImageTk.PhotoImage(resized_img)
+			label.config(image = frame_image)
+			label.image = frame_image
+
+	def shot_image(self):
+		self.label.pack()
+		thread = threading.Thread(target=self.stream, args=(self.label,))
+		thread.daemon = 1
+		thread.start()
+	
 
 	def stop_record(self):
 		self.record = False

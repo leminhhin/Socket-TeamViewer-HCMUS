@@ -1,23 +1,3 @@
-# import pyautogui
-# from client import Client
-# from time import time, sleep
-# from pyautogui import screenshot
-# import cv2 as cv
-# import numpy as np
-
-# def test_client():
-# 	c = Client()
-# 	c.host = "LAPTOP-NNF7IU29"
-# 	c.port = 10000
-# 	c.connect()
-
-# 	res = None
-# 	res = Client.req_dirtree_server2client('', "E:\\Mang May Tinh\Key.txt", "E:/Mang May Tinh/Socket-TeamViewer-HCMUS/document")
-# 	print(res)
-
-# test_client()
-
-
 import tkinter as tk
 import tkinter.ttk as thm
 import tkinter.messagebox as msbx
@@ -189,9 +169,6 @@ class client_frame(tk.Frame):
 		msbx.showinfo("Get MAC Address", "Địa chỉ MAC của Server là: " + MAC_addr.upper())
 
 	def lockKeyboard_run(self):
-		#if not self.status:
-		#	msbx.showerror("Kết nối đến Server", "Chưa kết nối đến Server.")
-		#	return None
 
 		if self.lock_keyboard_text.get() == "Khoá\nbàn phím":
 			client.Client.req_lock_keyboard(self)
@@ -229,7 +206,7 @@ class client_frame(tk.Frame):
 			msbx.showerror("Kết nối đến Server", "Chưa kết nối đến Server.")
 			return None
 		self.top = tk.Toplevel(self.parent)
-		self.top.geometry("582x324+250+250")
+		self.top.geometry("950x528+250+250")
 		self.app = liveScreen.live_frame(self.top)
 
 	#Shut down
