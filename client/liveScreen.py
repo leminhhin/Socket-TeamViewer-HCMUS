@@ -14,9 +14,6 @@ class live_frame(tk.Frame):
 		self.parent = parent
 		self.pack(fill = tk.BOTH, expand = True)
 		self.make_widgets()
-		self.video_name = "D:\Su-That-Sau-Mot-Loi-Hua.mp4"
-		global video
-		video = imageio.get_reader(self.video_name)
 		
 		self.label = thm.Label(self.frame2)
 		self.record = False
