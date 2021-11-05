@@ -2,6 +2,7 @@
 client/.vs/client/v16/.suo
 client/client.pyproj
 client/client.sln
-*.pyc
-*.pyc
-*.pyc
+client/__pycache__
+server/__pycache__
+client/.vscode
+server/.vscode

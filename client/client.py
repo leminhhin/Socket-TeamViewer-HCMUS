@@ -74,9 +74,11 @@ class Client:
 
     def req_keystroke_hook(self):
         send('keystroke-hook')
+        recv()
     
     def req_keystroke_unhook(self):
         send('keystroke-unhook')
+        recv()
     
     def req_keystroke_get(self):
         send('keystroke-get')
@@ -85,9 +87,11 @@ class Client:
 
     def req_lock_keyboard(self):
         send('lock-keyboard')
+        recv()
 
     def req_unlock_keyboard(self):
-        send('unlock-keyboard')   
+        send('unlock-keyboard')
+        recv()
 
     def req_reg_getvalue(self, path, value_name):
         send('reg-getvalue', [path, value_name])
